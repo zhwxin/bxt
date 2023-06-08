@@ -17,13 +17,26 @@ public class SeriesLabelServiceImpl
 
     private static final String OTHER = "其他";
 
-    // 根据品牌查询映射词典
+    /**
+     * 根据品牌名称获取该品牌对应的映射字典列表
+     *
+     * @param brand 品牌名称
+     * @return 映射字典列表
+     */
     private List<MappingDict> getMappingDictByBrand(String brand) {
         QueryWrapper<MappingDict> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("brand", brand);
         return dictMapper.selectList(queryWrapper);
     }
 
+
+    /**
+     * 获取商品系列标签
+     *
+     * @param brand       品牌名称
+     * @param productName 商品名称
+     * @return 商品系列标签，如果无法匹配到标签则返回 品牌名称 + "其他"
+     */
     @Override
     public String getSeriesLabel(String brand, String productName) {
         // 先识别品牌，如果品牌值是其他，那么系列就是其他

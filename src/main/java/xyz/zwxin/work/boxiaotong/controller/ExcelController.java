@@ -3,11 +3,9 @@ package xyz.zwxin.work.boxiaotong.controller;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,10 +32,10 @@ public class ExcelController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", "split_excel.zip");
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(outputStream.toByteArray());
     }
-
-
 
     @PostMapping("/skuSplit")
     public ResponseEntity<byte[]> splitSKU(MultipartFile file) throws Exception {
@@ -49,7 +47,9 @@ public class ExcelController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", resultFile.getName());
         headers.setContentLength(resultBytes.length);
-        return new ResponseEntity<>(resultBytes, headers, HttpStatus.OK);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(resultBytes);
     }
 
 

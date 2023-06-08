@@ -1,7 +1,6 @@
 package xyz.zwxin.work.boxiaotong.utils;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -17,6 +16,14 @@ import java.util.*;
 
 public class ExcelUtil {
 
+    /**
+     * 根据指定列的值将工作簿拆分为多个工作簿，每个工作簿包含指定列值相同的行
+     *
+     * @param workbook   要拆分的工作簿
+     * @param columnName 指定列名
+     * @return 包含拆分后的工作簿的映射，其中键为指定列值，值为包含对应行的工作簿
+     * @throws IOException 如果创建新工作簿时出现 I/O 异常
+     */
     public static Map<String, Workbook> splitWorkbook(Workbook workbook, String columnName) throws IOException {
         Sheet sheet = workbook.getSheetAt(0);
         int columnNumber = getColumnNumber(sheet, columnName);
@@ -100,6 +107,14 @@ public class ExcelUtil {
         return workbooks;
     }
 
+
+    /**
+     * 获取指定列的列号
+     *
+     * @param sheet      工作表对象
+     * @param columnName 列名
+     * @return 如果列名不存在于工作表的第一行中抛出
+     */
     private static int getColumnNumber(Sheet sheet, String columnName) {
         Row row = sheet.getRow(0);
         for (int i = 0; i < row.getLastCellNum(); i++) {
@@ -115,6 +130,14 @@ public class ExcelUtil {
         throw new IllegalArgumentException("Column not found: " + columnName);
     }
 
+
+    /**
+     * 将多个Workbook对象写入到一个zip文件中
+     *
+     * @param workbooks    包含多个Workbook对象的Map
+     * @param outputStream 输出流
+     * @throws IOException 如果写入zip文件时出现异常
+     */
     public static void writeToZip(Map<String, Workbook> workbooks, ByteArrayOutputStream outputStream) throws IOException {
         try (ZipArchiveOutputStream zipOutputStream = new ZipArchiveOutputStream(outputStream)) {
             for (String workbookName : workbooks.keySet()) {
@@ -130,6 +153,13 @@ public class ExcelUtil {
     }
 
 
+    /**
+     * 将输入文件中的商品sku详情拆分成多行，并将结果写入到新文件中
+     *
+     * @param inputFile 输入文件
+     * @return 输出文件
+     * @throws Exception 如果文件读写出现异常
+     */
     public static File splitSKU(File inputFile) throws Exception {
         File outputFile = processExcelFile(inputFile);
 
@@ -138,6 +168,14 @@ public class ExcelUtil {
         return outputFile;
     }
 
+    /**
+     * 从输入文件中读取数据，将每个商品sku详情拆分成多行，并将数据写入到输出文件中
+     *
+     * @param inputFile  输入文件
+     * @param outputFile 输出文件
+     * @return 输出文件
+     * @throws IOException 如果文件读写出现异常
+     */
 
     public static File processExcel(File inputFile, File outputFile) throws IOException {
         //读取Excel文件
@@ -194,6 +232,14 @@ public class ExcelUtil {
         return outputFile;
     }
 
+
+    /**
+     * 将数据写入到Excel文件中，如果文件已经存在，则按照已有的列名顺序写入，否则新建一个空的工作簿
+     *
+     * @param rowDataList 数据列表，每个元素为一个Map，表示一行数据，Map的key为列名，value为对应的值
+     * @param file        要写入的文件
+     * @throws IOException 如果文件读写出现异常
+     */
     public static void writeToFile(List<Map<String, String>> rowDataList, File file) throws IOException {
         XSSFWorkbook workbook;
         Sheet sheet;
@@ -237,6 +283,12 @@ public class ExcelUtil {
     }
 
 
+    /**
+     * 解析商品sku详情字符串，返回一个Map列表，每个Map表示一个sku的详情
+     *
+     * @param skuDetail 商品sku详情字符串，格式为JSON数组
+     * @return 包含sku详情的Map列表
+     */
     public static List<Map<String, Object>> parseSkuDetail(String skuDetail) {
         List<Map<String, Object>> result = new ArrayList<>();
         JSONArray jsonArray = JSONArray.parseArray(skuDetail);
@@ -254,6 +306,13 @@ public class ExcelUtil {
     }
 
 
+    /**
+     * 处理Excel文件，提取所需列并生成新的Excel文件
+     *
+     * @param inputFile 待处理的Excel文件
+     * @return 生成的新Excel文件
+     * @throws IOException 如果读取或写入文件时发生错误，则抛出IOException
+     */
     public static File processExcelFile(File inputFile) throws IOException {
         // 读取Excel文件
         Workbook workbook = WorkbookFactory.create(inputFile);

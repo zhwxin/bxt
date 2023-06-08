@@ -3,12 +3,10 @@ package xyz.zwxin.work.boxiaotong.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import xyz.zwxin.work.boxiaotong.mapper.MappingDictMapper;
-import xyz.zwxin.work.boxiaotong.pojo.MappingDict;
+import org.springframework.stereotype.Service;
+import xyz.zwxin.work.boxiaotong.mapper.ProductMapper;
 import xyz.zwxin.work.boxiaotong.pojo.Product;
 import xyz.zwxin.work.boxiaotong.service.ProductService;
-import xyz.zwxin.work.boxiaotong.mapper.ProductMapper;
-import org.springframework.stereotype.Service;
 import xyz.zwxin.work.boxiaotong.service.SeriesLabelService;
 
 import java.util.List;
@@ -17,7 +15,7 @@ import java.util.List;
 /**
  * @author zhuwx
  * @description 针对表【product】的数据库操作Service实现
- * @createDate 2023-06-07 13:03:06
+ * @createDate 2023-06-08 13:03:06
  */
 @Service
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
@@ -26,13 +24,15 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
     @Autowired
     private ProductMapper productMapper;
     @Autowired
-    private MappingDictMapper dictMapper;
-    @Autowired
     private SeriesLabelService seriesLabelService;
 
     // 每一批次的商品数据条数
     private static final int BATCH_SIZE = 1000;
 
+
+    /**
+     * 批量更新商品系列标签
+     */
     @Override
     public void updateProductSeries() {
         // 查询数据库中所有商品的数量

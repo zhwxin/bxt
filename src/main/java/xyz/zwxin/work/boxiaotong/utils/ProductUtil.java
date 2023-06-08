@@ -7,68 +7,6 @@ import java.util.regex.Pattern;
 
 public class ProductUtil {
 
-
-    public static int extractUnit(String productName) {
-        // 定义正则表达式
-        String regex = "\\d+(\\.\\d+)?[升Llml毫升MLmL]";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(productName);
-
-        int unit = 0;
-        if (matcher.find()) {
-            // 提取数字和单位
-            String str = matcher.group();
-            double num = Double.parseDouble(str.replaceAll("[升Llml毫升MLmL]", ""));
-            String unitStr = str.replaceAll("[0-9.]", "");
-
-            // 判断单位是L还是ml，如果是L，把L转化成ml
-            if (unitStr.equalsIgnoreCase("L") || unitStr.equalsIgnoreCase("升")) {
-                unit = (int) (num * 1000);
-            } else {
-                unit = (int) num;
-            }
-        }
-        return unit;
-    }
-
-    public double calculateMinPriceUnit(double pagePrice, String promotionInfo) {
-        double minPrice = pagePrice; // 初始化最低到手价为页面价格
-        List<Promotion> promotions = filterPromotions(pagePrice, promotionInfo);
-        int count = 1;
-        for (Promotion promotion1 : promotions) {
-            if (promotion1.getSpecialPrice() < pagePrice) {//在单件价优惠内，使用promotion1.specialPrice做单价
-                for (Promotion promotion2 : promotions) {
-                    if (promotion1.getMaxQuantity() * promotion1.getSpecialPrice() < promotion2.getFullPrice()) {//最大数量单件价达不到此次满减
-                        if (minPrice > promotion1.getSpecialPrice()) {
-                            minPrice = promotion1.getSpecialPrice();
-                        }
-                    } else {//单件价+此次满减
-                        count = promotion1.getMinQuantity();
-                        while (count * promotion1.getSpecialPrice() < promotion2.getFullPrice()) {//达不到此次满减条件，增加数量，此时单价是单件价优惠
-                            count++;
-                        }
-                        if (((count * promotion1.getSpecialPrice() - promotion2.getMinusPrice()) / count) < minPrice) {
-                            minPrice = (count * promotion1.getSpecialPrice() - promotion2.getMinusPrice()) / count;
-                        }
-                    }
-                }
-            } else {//单满减
-                for (Promotion promotion2 : promotions) {
-                    count = 1;
-                    while (count * pagePrice < promotion2.getFullPrice()) {//达不到此次满减条件，增加数量，此时单价是单件价优惠
-                        count++;
-                    }
-                    if (((count * pagePrice - promotion2.getMinusPrice()) / count) < minPrice) {
-                        minPrice = ((count * pagePrice - promotion2.getMinusPrice()) / count);
-                    }
-                }
-            }
-        }
-        return minPrice;
-
-    }
-
-
     class Promotion {
         private double fullPrice; // 满减条件金额
         private double minusPrice; // 满减金额
@@ -114,6 +52,84 @@ public class ProductUtil {
 
     }
 
+    /**
+     * 从商品名称中提取出容量单位，并将其转化为毫升（ml）为单位的整数
+     *
+     * @param productName 商品名称
+     * @return 容量单位对应的毫升数，如果未找到容量单位则返回0
+     */
+    public static int extractUnit(String productName) {
+        // 定义正则表达式
+        String regex = "\\d+(\\.\\d+)?[升Llml毫升MLmL]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(productName);
+
+        int unit = 0;
+        if (matcher.find()) {
+            // 提取数字和单位
+            String str = matcher.group();
+            double num = Double.parseDouble(str.replaceAll("[升Llml毫升MLmL]", ""));
+            String unitStr = str.replaceAll("[0-9.]", "");
+
+            // 判断单位是L还是ml，如果是L，把L转化成ml
+            if (unitStr.equalsIgnoreCase("L") || unitStr.equalsIgnoreCase("升")) {
+                unit = (int) (num * 1000);
+            } else {
+                unit = (int) num;
+            }
+        }
+        return unit;
+    }
+
+    /**
+     * 计算最低到手价的单位价格
+     *
+     * @param pagePrice     商品页面价格
+     * @param promotionInfo 商品促销信息
+     * @return 最低到手价的单位价格
+     */
+    public double calculateMinPriceUnit(double pagePrice, String promotionInfo) {
+        double minPrice = pagePrice; // 初始化最低到手价为页面价格
+        List<Promotion> promotions = filterPromotions(pagePrice, promotionInfo);
+        int count = 1;
+        for (Promotion promotion1 : promotions) {
+            if (promotion1.getSpecialPrice() < pagePrice) {//在单件价优惠内，使用promotion1.specialPrice做单价
+                for (Promotion promotion2 : promotions) {
+                    if (promotion1.getMaxQuantity() * promotion1.getSpecialPrice() < promotion2.getFullPrice()) {//最大数量单件价达不到此次满减
+                        if (minPrice > promotion1.getSpecialPrice()) {
+                            minPrice = promotion1.getSpecialPrice();
+                        }
+                    } else {//单件价+此次满减
+                        count = promotion1.getMinQuantity();
+                        while (count * promotion1.getSpecialPrice() < promotion2.getFullPrice()) {//达不到此次满减条件，增加数量，此时单价是单件价优惠
+                            count++;
+                        }
+                        if (((count * promotion1.getSpecialPrice() - promotion2.getMinusPrice()) / count) < minPrice) {
+                            minPrice = (count * promotion1.getSpecialPrice() - promotion2.getMinusPrice()) / count;
+                        }
+                    }
+                }
+            } else {//单满减
+                for (Promotion promotion2 : promotions) {
+                    count = 1;
+                    while (count * pagePrice < promotion2.getFullPrice()) {//达不到此次满减条件，增加数量，此时单价是单件价优惠
+                        count++;
+                    }
+                    if (((count * pagePrice - promotion2.getMinusPrice()) / count) < minPrice) {
+                        minPrice = ((count * pagePrice - promotion2.getMinusPrice()) / count);
+                    }
+                }
+            }
+        }
+        return minPrice;
+    }
+
+
+    /**
+     * @param pagePrice     页面价格
+     * @param promotionInfo 促销信息，格式为 "满xx元减yy元" 或 "购买xx件以上，享受单件价¥yy"
+     * @return 符合条件的促销活动列表
+     */
     public List<Promotion> filterPromotions(double pagePrice, String promotionInfo) {
         List<Promotion> promotions = new ArrayList<>();
         // 解析促销信息
@@ -155,7 +171,5 @@ public class ProductUtil {
         }
         return promotions;
     }
-
-
 }
 
