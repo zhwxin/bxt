@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Split Excel</title>
+</head>
+<body>
+<h1>Split Excel</h1>
+<form method="post" enctype="multipart/form-data" action="/splitExcel">
+    <label for="file">Excel File:</label>
+    <input type="file" id="file" name="file" accept=".xlsx,.xls">
+    <br><br>
+    <label for="column">Column Name:</label>
+    <input type="text" id="column" name="column">
+    <br><br>
+    <input type="submit" value="Split">
+</form>
+</body>
+</html>

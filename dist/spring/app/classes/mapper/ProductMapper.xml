@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.zwxin.work.boxiaotong.mapper.ProductMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.zwxin.work.boxiaotong.pojo.Product">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="brand" column="brand" jdbcType="VARCHAR"/>
+        <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+        <result property="series" column="series" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,brand,product_name,
+        series
+    </sql>
+    
+
+</mapper>

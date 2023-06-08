@@ -1,0 +1,15 @@
+xyz\zwxin\work\boxiaotong\pojo\Product.class
+xyz\zwxin\work\boxiaotong\controller\PagesController.class
+xyz\zwxin\work\boxiaotong\utils\ProductUtil$Promotion.class
+xyz\zwxin\work\boxiaotong\service\impl\SeriesLabelServiceImpl.class
+xyz\zwxin\work\boxiaotong\service\impl\ProductServiceImpl.class
+xyz\zwxin\work\boxiaotong\service\ProductService.class
+xyz\zwxin\work\boxiaotong\controller\ExcelController.class
+xyz\zwxin\work\boxiaotong\mapper\MappingDictMapper.class
+xyz\zwxin\work\boxiaotong\utils\ProductUtil.class
+xyz\zwxin\work\boxiaotong\BoxiaotongApplication.class
+xyz\zwxin\work\boxiaotong\utils\ExcelUtil.class
+xyz\zwxin\work\boxiaotong\mapper\ProductMapper.class
+xyz\zwxin\work\boxiaotong\service\SeriesLabelService.class
+xyz\zwxin\work\boxiaotong\pojo\MappingDict.class
+xyz\zwxin\work\boxiaotong\utils\ExcelUtil$1.class

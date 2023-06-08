@@ -1,0 +1,45 @@
+# SeriesLabelService.getSeriesLabel()
+
+- 方法：打系列标签
+- 方法输入：品牌，商品名称， 映射词典
+- 返回：系列标签
+
+# ProductService.updateProductSeries()
+
+- 分批查询商品表
+- 逐个打标签 映射词典也从表中查询
+- 批量更新商品表 即对系列字段赋值
+
+# ProductUnits.extractUnit()
+
+- 方法名： 提取单量
+- 输入: 商品名称
+- 返回：单量
+
+# ProductUnits.calculateMinPriceUnit()
+
+- 方法名： 计算最低到手价
+- 方法输入：页面价格， 促销信息
+- 返回： 最低到手价
+
+# ExcelController.splitExcel()
+
+- POST /splitExcel
+- 输入： excel ，列名
+- 返回： 一个zip zip中是按照指定列拆分后的excel 如 可以指定大区 也可以指定平台或城市
+- 127.0.0.1:8888/execl
+
+# ExcelController.splitSKU()
+
+- POST /skuSplit
+- 输入： excel
+- 返回： excel(output.xlsx)
+- 127.0.0.1:8888/sku
+
+# 生成.exe程序
+
+- 先使用Maven生成jar包
+- 打开终端，进入项目的根目录
+- 运行命令：jpackage --type app-image --name spring --input target --main-jar spring-1.0.jar --win-console --dest dist
+- 在项目的根目录下生成了dist，dist目录下是spring.exe，双击运行即可
+- 运行后访问127.0.0.1:8888/sku和127.0.0.1:8888/execl即可

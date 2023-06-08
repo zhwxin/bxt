@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.zwxin.work.boxiaotong.mapper.MappingDictMapper">
+
+    <resultMap id="BaseResultMap" type="xyz.zwxin.work.boxiaotong.pojo.MappingDict">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="brand" column="brand" jdbcType="VARCHAR"/>
+            <result property="firstKeyword" column="first_keyword" jdbcType="VARCHAR"/>
+            <result property="secondKeyword" column="second_keyword" jdbcType="VARCHAR"/>
+            <result property="thirdKeyword" column="third_keyword" jdbcType="VARCHAR"/>
+            <result property="fourthKeyword" column="fourth_keyword" jdbcType="VARCHAR"/>
+            <result property="mappingValue" column="mapping_value" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,brand,first_keyword,
+        second_keyword,third_keyword,fourth_keyword,
+        mapping_value
+    </sql>
+</mapper>
