@@ -16,8 +16,6 @@ import xyz.zwxin.work.boxiaotong.service.impl.ProductServiceImpl;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class ProductServiceTest {

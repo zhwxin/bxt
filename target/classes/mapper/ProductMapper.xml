@@ -15,6 +15,6 @@
         id,brand,product_name,
         series
     </sql>
-    
+
 
 </mapper>
