@@ -8,10 +8,40 @@
     <input type="file" name="file" accept=".xlsx,.xls"/>
     <button type="submit">上传并拆分SKU</button>
 </form>
+<div id="error" style="color: red;"></div>
+<script>
+    window.onload = function () {
+        var form = document.querySelector('form');
+        const error = document.querySelector('#error');
 
-
-<!--    <input type="submit" value="Split">-->
-
-
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/skuSplit');
+            xhr.responseType = 'blob';
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var blob = new Blob([xhr.response], {type: 'application/vnd.ms-excel'});
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'sku_split_result.xlsx';
+                    link.click();
+                } else {
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        error.textContent = reader.result;
+                    };
+                    reader.readAsText(xhr.response);
+                }
+            };
+            xhr.onerror = function () {
+                alert('请求错误');
+            };
+            var formData = new FormData(form);
+            xhr.send(formData);
+        });
+    };
+</script>
 </body>
 </html>
+

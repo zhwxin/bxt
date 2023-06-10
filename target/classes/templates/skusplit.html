@@ -27,11 +27,9 @@
                     link.download = 'sku_split_result.xlsx';
                     link.click();
                 } else {
-
                     var reader = new FileReader();
-                    reader.onload = function() {
-                        alert(reader.result);
-                        error.textContent=reader.result;
+                    reader.onload = function () {
+                        error.textContent = reader.result;
                     };
                     reader.readAsText(xhr.response);
                 }
@@ -46,19 +44,4 @@
 </script>
 </body>
 </html>
-
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head>-->
-<!--    <title>Split SKU</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<form action="/skuSplit" method="post" enctype="multipart/form-data">-->
-<!--    <input type="file" name="file" accept=".xlsx,.xls"/>-->
-<!--    <button type="submit">上传并拆分SKU</button>-->
-<!--</form>-->
-
-
-<!--</body>-->
-<!--</html>-->
 
