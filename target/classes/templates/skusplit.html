@@ -1,67 +1,64 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>Split SKU</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#splitSKUForm').submit(function(e) {
-                e.preventDefault();
-                var formData = new FormData($(this)[0]);
-                $.ajax({
-                    url: '/skuSplit',
-                    type: 'POST',
-                    data: formData,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    success: function(data, textStatus, xhr) {
-                        var filename = "";
-                        var disposition = xhr.getResponseHeader('Content-Disposition');
-                        if (disposition && disposition.indexOf('attachment') !== -1) {
-                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                            var matches = filenameRegex.exec(disposition);
-                            if (matches != null && matches[1]) {
-                                filename = matches[1].replace(/['"]/g, '');
-                            }
-                        }
-                        var blob = new Blob([data], {type: 'application/octet-stream'});
-                        if (typeof window.navigator.msSaveBlob !== 'undefined') {
-                            window.navigator.msSaveBlob(blob, filename);
-                        } else {
-                            var URL = window.URL || window.webkitURL;
-                            var downloadUrl = URL.createObjectURL(blob);
-                            if (filename) {
-                                var a = document.createElement("a");
-                                if (typeof a.download === 'undefined') {
-                                    window.location.href = downloadUrl;
-                                } else {
-                                    a.href = downloadUrl;
-                                    a.download = filename;
-                                    document.body.appendChild(a);
-                                    a.click();
-                                }
-                            } else {
-                                window.location.href = downloadUrl;
-                            }
-                            setTimeout(function() { URL.revokeObjectURL(downloadUrl); }, 100);
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        alert(xhr.responseText);
-                    }
-                });
-            });
-        });
-    </script>
 </head>
 <body>
-<form id="splitSKUForm" enctype="multipart/form-data">
-    <label for="file">Select file:</label>
-    <input type="file" id="file" name="file"><br><br>
-    <input type="submit" value="Split SKU">
+<form action="/skuSplit" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".xlsx,.xls"/>
+    <button type="submit">上传并拆分SKU</button>
 </form>
+<div id="error" style="color: red;"></div>
+<script>
+    window.onload = function () {
+        var form = document.querySelector('form');
+        const error = document.querySelector('#error');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/skuSplit');
+            xhr.responseType = 'blob';
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var blob = new Blob([xhr.response], {type: 'application/vnd.ms-excel'});
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'sku_split_result.xlsx';
+                    link.click();
+                } else {
+
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        alert(reader.result);
+                        error.textContent=reader.result;
+                    };
+                    reader.readAsText(xhr.response);
+                }
+            };
+            xhr.onerror = function () {
+                alert('请求错误');
+            };
+            var formData = new FormData(form);
+            xhr.send(formData);
+        });
+    };
+</script>
 </body>
 </html>
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Split SKU</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<form action="/skuSplit" method="post" enctype="multipart/form-data">-->
+<!--    <input type="file" name="file" accept=".xlsx,.xls"/>-->
+<!--    <button type="submit">上传并拆分SKU</button>-->
+<!--</form>-->
+
+
+<!--</body>-->
+<!--</html>-->
+
