@@ -2,18 +2,50 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Split Excel</title>
+    <title>上传Excel文件并拆分</title>
 </head>
 <body>
-<h1>Split Excel</h1>
-<form method="post" enctype="multipart/form-data" action="/splitExcel">
-    <label for="file">Excel File:</label>
-    <input type="file" id="file" name="file" accept=".xlsx,.xls">
-    <br><br>
-    <label for="column">Column Name:</label>
-    <input type="text" id="column" name="column">
-    <br><br>
-    <input type="submit" value="Split">
+<h1>上传Excel文件并拆分</h1>
+<form action="/splitExcel" method="post" enctype="multipart/form-data">
+    <label for="file">选择要上传的Excel文件：</label>
+    <input type="file" name="file" id="file" required><br><br>
+    <label for="column">输入要拆分的列名：</label>
+    <input type="text" name="column" id="column" required><br><br>
+    <button type="submit">上传并拆分</button>
 </form>
+<div id="error" style="color: red;"></div>
+<script>
+    const form = document.querySelector('form');
+    const error = document.querySelector('#error');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        try {
+            const response = await fetch('/splitExcel', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'split_files.zip';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } else {
+                const text = await response.text();
+                error.textContent = text;
+            }
+        } catch (error) {
+            console.error(error);
+            error.textContent = '表单提交失败，请重试';
+        }
+    });
+</script>
 </body>
 </html>
+
+

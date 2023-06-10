@@ -60,7 +60,13 @@ public class ProductUtil {
      */
     public static int extractUnit(String productName) {
         // 定义正则表达式
-        String regex = "\\d+(\\.\\d+)?[升Llml毫升MLmL]";
+//        String regex = "\\d+(\\.\\d+)?[升|L|l|ml|毫升|ML|mL]";
+
+
+        //修改了正则表达式，使其严格检查单位，只允许出现"升"、"L"、"l"、"毫升"、"ML"和"mL"这几种单位，不允许出现其他单位
+        String regex ="\\d+(\\.\\d+)?(?:(?:升)|(?:L)|(?:l)|(?:毫升)|(?:ML)|(?:mL)|(?:ml))";
+
+
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(productName);
 
@@ -68,7 +74,7 @@ public class ProductUtil {
         if (matcher.find()) {
             // 提取数字和单位
             String str = matcher.group();
-            double num = Double.parseDouble(str.replaceAll("[升Llml毫升MLmL]", ""));
+            double num = Double.parseDouble(str.replaceAll("[升|L|l|ml|毫升|ML|mL]", ""));
             String unitStr = str.replaceAll("[0-9.]", "");
 
             // 判断单位是L还是ml，如果是L，把L转化成ml
